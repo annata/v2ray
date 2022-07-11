@@ -1,4 +1,6 @@
-# v2ray
+# 一键v2ray
+
+- `curl -fsSL https://github.com/annata/v2ray/releases/download/v1.0.0/v2ray.sh | bash`
 
 # 注意事项
 1. 购买服务器时操作系统选择debian
