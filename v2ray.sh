@@ -9,12 +9,14 @@ param(){
 	trojan_port="443"
 	vless_port="8443"
 	shadowsocks_port="14523"
+	socks5_port="1080"
 }
 
 pw(){
 	trojan_password=$(uuidgen)
 	vless_password=$(uuidgen)
 	shadowsocks_password=$(uuidgen)
+	socks5_password=$(uuidgen)
 }
 
 if [ `id -u` != "0" ]
@@ -48,7 +50,7 @@ pw
 CERT0=`/root/.v2ray/v2ctl cert --expire=240000h`
 CERT1=`/root/.v2ray/v2ctl cert --expire=240000h`
 echo -e '[program:ss]\ncommand=/root/.v2ray/v2ray -config=/root/.v2ray/config.json\nautostart=true\nautorestart=true' > /etc/supervisor/conf.d/ss.conf
-TEXT='{"inbounds":[{"port":'${trojan_port}',"protocol":"trojan","settings":{"clients":[{"password":"'${trojan_password}'"}],"fallbacks":[{"dest":80}]},"streamSettings":{"security":"tls","tlsSettings":{"alpn":["http/1.1"],"certificates":['${CERT0}'],"disableSystemRoot":true}}},{"port":'
+TEXT='{"inbounds":[{"port":'${socks5_port}',"protocol":"socks","settings":{"auth":"password","accounts":[{"user":"user","pass":"'${socks5_password}'"}]}},{"port":'${trojan_port}',"protocol":"trojan","settings":{"clients":[{"password":"'${trojan_password}'"}],"fallbacks":[{"dest":80}]},"streamSettings":{"security":"tls","tlsSettings":{"alpn":["http/1.1"],"certificates":['${CERT0}'],"disableSystemRoot":true}}},{"port":'
 TEXT=${TEXT}${vless_port}',"protocol":"vless","settings":{"clients":[{"id":"'${vless_password}'"}],"fallbacks":[{"dest":80}],"decryption":"none"},"streamSettings":{"security":"tls","tlsSettings":{"alpn":["http/1.1"],"certificates":['${CERT1}'],"disableSystemRoot":true}}},'
 TEXT=${TEXT}'{"port":'${shadowsocks_port}',"protocol":"shadowsocks","settings":{"password":"'${shadowsocks_password}'","method":"chacha20-ietf-poly1305","network":"tcp,udp"}}],"outbounds":[{"protocol":"freedom"}]}'
 echo -e $TEXT > /root/.v2ray/config.json
@@ -59,3 +61,5 @@ echo 'vless_port='${vless_port}
 echo 'vless_password='${vless_password}
 echo 'shadowsocks_port='${shadowsocks_port}
 echo 'shadowsocks_password='${shadowsocks_password}
+echo 'socks5_port='${socks5_port}
+echo 'socks5_password='${socks5_password}
