@@ -41,7 +41,7 @@ centos|fedora|rhel)
     ;;
 esac
 
-apt-get update && apt-get install supervisor zip nginx curl wget -y
+apt-get update && apt-get install supervisor zip nginx curl wget uuid-runtime -y
 mkdir -p /root/.v2ray
 cd /root/.v2ray
 if [ ! -f "/root/.v2ray/v2ray" ]; then
