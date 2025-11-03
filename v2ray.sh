@@ -45,13 +45,13 @@ apt-get update && apt-get install supervisor zip nginx curl wget uuid-runtime -y
 mkdir -p /root/.v2ray
 cd /root/.v2ray
 if [ ! -f "/root/.v2ray/v2ray" ]; then
-  wget https://github.com/v2fly/v2ray-core/releases/download/v4.45.2/v2ray-linux-64.zip && unzip v2ray-linux-64.zip
+  wget https://github.com/v2fly/v2ray-core/releases/download/v5.41.0/v2ray-linux-64.zip && unzip v2ray-linux-64.zip
 fi
 param
 pw
 CERT0=`/root/.v2ray/v2ctl cert --expire=240000h`
 CERT1=`/root/.v2ray/v2ctl cert --expire=240000h`
-echo -e '[program:ss]\ncommand=/root/.v2ray/v2ray -config=/root/.v2ray/config.json\nautostart=true\nautorestart=true' > /etc/supervisor/conf.d/ss.conf
+echo -e '[program:ss]\ncommand=/root/.v2ray/v2ray run -config=/root/.v2ray/config.json\nautostart=true\nautorestart=true' > /etc/supervisor/conf.d/ss.conf
 TEXT='{"inbounds":[{"port":'${http_port}',"protocol":"http","settings":{"accounts":[{"user":"user","pass":"'${http_password}'"}]}},{"port":'${socks5_port}',"protocol":"socks","settings":{"auth":"password","accounts":[{"user":"user","pass":"'${socks5_password}'"}]}},{"port":'${trojan_port}',"protocol":"trojan","settings":{"clients":[{"password":"'${trojan_password}'"}],"fallbacks":[{"dest":80}]},"streamSettings":{"security":"tls","tlsSettings":{"alpn":["http/1.1"],"certificates":['${CERT0}'],"disableSystemRoot":true}}},{"port":'
 TEXT=${TEXT}${vless_port}',"protocol":"vless","settings":{"clients":[{"id":"'${vless_password}'"}],"fallbacks":[{"dest":80}],"decryption":"none"},"streamSettings":{"security":"tls","tlsSettings":{"alpn":["http/1.1"],"certificates":['${CERT1}'],"disableSystemRoot":true}}},'
 TEXT=${TEXT}'{"port":'${shadowsocks_port}',"protocol":"shadowsocks","settings":{"password":"'${shadowsocks_password}'","method":"chacha20-ietf-poly1305","network":"tcp,udp"}}],"outbounds":[{"protocol":"freedom"}]}'
